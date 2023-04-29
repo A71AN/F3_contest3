@@ -1,58 +1,68 @@
-const signupBtn = document.getElementById("signup-form");
+var name1 =document.getElementById("name");
+var email=document.getElementById("email");
+var pass=document.getElementById("pass");
+var confirmpass=document.getElementById("confirmpass");
+ if(localStorage.getItem("name") && localStorage.getItem("email")&& localStorage.getItem("password")){
+document.getElementById("ffoorrmm").style.display="none"
+ 
+document.querySelector(".header").innerHTML=` <header>   <div>
+<h2>Header</h2>
+<div class="rightside">
+    <p>Signup</p>
+    <p>Profile</p>
+</div>
+</div>
+</header>
+<hr>
+<div class="detailbody">
+    <h1>Profile</h1>
+    <span>Full Name :  ${localStorage.getItem("name")}</span>
+    <span>Email :  ${localStorage.getItem("email")}</span>
+    <span>Password :  ${localStorage.getItem("password")}</span>
+    <button id="button1">Logout</button>
+ </div> `
+ 
 
-signupBtn.addEventListener("submit", (event) => {
-    event.preventDefault();
-    // Retrieve the values of the input fields
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    // other user details
-
-    // Create a user object with these values
-    const user = {
-        name,
-        email,
-        password,
-        accessToken: generateAccessToken() // add the access token to the user object
-    };
-
-    // Validating the form.
-    if(user.name === "" || user.email === "" || user.password === "") {
-        document.getElementById('error-msg').style.display = "block";
-        return;
-    } else if(user.password !== confirmPassword) {
-        document.getElementById('password-mismatch-msg').style.display = "block";
-        return;
-    } else {
-        document.getElementById("success-msg").style.display = "block";
+ }
+ else{
+ document.getElementById("button").addEventListener("click",(e)=>{
+     
+    let nameVal=name1.value;
+    let emailVal=email.value;
+    let passVal=pass.value;
+    let confirmpassVal=confirmpass.value;
+  if(nameVal=="" || emailVal=="" || passVal=="" || confirmpassVal==""){
+      document.getElementById("message").innerHTML="Error: All the fields are mandatory";
+      document.getElementById("message").style.color="red";  
+      document.getElementById("message").style.fontSize="20px";
+      console.log(nameVal)
+  }
+  else{
+    if(passVal!=confirmpassVal){
+        document.getElementById("message").innerHTML="Password and Comfirm Password does not match!";
+        document.getElementById("message").style.color="blue";  
+        document.getElementById("message").style.fontSize="20px";   
     }
-
-    // Store the user's state in the local storage
-    localStorage.setItem("user", JSON.stringify(user));
-
-    // Show success message and redirect to profile page
-    
+    else{
+      localStorage.setItem("name",nameVal);
+      localStorage.setItem("email", emailVal)
+      localStorage.setItem("password", passVal);
+      document.getElementById("message").innerHTML="Successfully Signed Up!";
+      document.getElementById("message").style.color="green";  
+      document.getElementById("message").style.fontSize="20px"; 
+      document.getElementById("loading").style.display="flex"  
     setTimeout(() => {
-        window.location.href = "/profile/index.html";
-    }, 1000); // redirect after 1 second
-});
-
-function generateAccessToken() {
-    // Generate a random 16-byte string
-    const randomBytes = new Uint8Array(16);
-    window.crypto.getRandomValues(randomBytes);
-    const accessToken = btoa(String.fromCharCode.apply(null, randomBytes));
-    return accessToken;
-}
-
-
-const profile = document.getElementById('profile');
-profile.addEventListener('click', () => {
-    const user = JSON.parse(localStorage.getItem('user')) || false;
-    if(user) {
-        window.location.href = "/profile/index.html";
-    } else {
-        window.location.href = "/index.html";
+      location.reload()  
+    }, 2000);
+   
+   
     }
-});
+  }
+ })
+}
+document.getElementById("button1").addEventListener("click", ()=>{
+  localStorage.removeItem("name");
+  localStorage.removeItem("email");
+  localStorage.removeItem("password");
+  location.reload()
+})
